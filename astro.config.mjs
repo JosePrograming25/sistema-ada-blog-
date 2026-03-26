@@ -5,7 +5,7 @@ import react from '@astrojs/react';
 
 export default defineConfig({
   site: 'https://joseprograming25.github.io',
-  base: '/sistema-ada-blog-',
+  base: '/sistema-ada-blog-/',
   vite: {
     plugins: [tailwindcss()]
   },
