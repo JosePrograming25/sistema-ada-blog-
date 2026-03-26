@@ -6,7 +6,7 @@ const base = import.meta.env.BASE_URL;
 <nav class="sticky top-0 z-50 border-b border-border bg-[#0f172a]/95 backdrop-blur-md">
   <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
     <!-- Logo -->
-    <a href="/" class="flex items-center gap-2.5 no-underline group shrink-0">
+    <a href={base} class="flex items-center gap-2.5 no-underline group shrink-0">
       <img
         src={`${base}logo.svg`}
         alt="Sistema Ada"
@@ -21,17 +21,17 @@ const base = import.meta.env.BASE_URL;
     <!-- Nav links (desktop) -->
     <ul class="hidden md:flex items-center gap-6 list-none">
       <li>
-        <a href="/" class="text-slate-300 hover:text-amber-400 transition-colors text-sm font-medium no-underline">
+        <a href={base} class="text-slate-300 hover:text-amber-400 transition-colors text-sm font-medium no-underline">
           Inicio
         </a>
       </li>
       <li>
-        <a href="/actualizaciones" class="text-slate-300 hover:text-amber-400 transition-colors text-sm font-medium no-underline">
+        <a href={`${base}actualizaciones`} class="text-slate-300 hover:text-amber-400 transition-colors text-sm font-medium no-underline">
           Actualizaciones
         </a>
       </li>
       <li>
-        <a href="/reportar-bug" class="text-slate-300 hover:text-amber-400 transition-colors text-sm font-medium no-underline">
+        <a href={`${base}reportar-bug`} class="text-slate-300 hover:text-amber-400 transition-colors text-sm font-medium no-underline">
           Reportar Bug
         </a>
       </li>
@@ -65,9 +65,9 @@ const base = import.meta.env.BASE_URL;
 
   <!-- Mobile menu -->
   <div id="mobile-menu" class="hidden md:hidden border-t border-border bg-[#0f172a] px-4 py-3 space-y-2">
-    <a href="/" class="block py-2 text-slate-300 hover:text-amber-400 text-sm font-medium no-underline">Inicio</a>
-    <a href="/actualizaciones" class="block py-2 text-slate-300 hover:text-amber-400 text-sm font-medium no-underline">Actualizaciones</a>
-    <a href="/reportar-bug" class="block py-2 text-slate-300 hover:text-amber-400 text-sm font-medium no-underline">Reportar Bug</a>
+    <a href={base} class="block py-2 text-slate-300 hover:text-amber-400 text-sm font-medium no-underline">Inicio</a>
+    <a href={`${base}actualizaciones`} class="block py-2 text-slate-300 hover:text-amber-400 text-sm font-medium no-underline">Actualizaciones</a>
+    <a href={`${base}reportar-bug`} class="block py-2 text-slate-300 hover:text-amber-400 text-sm font-medium no-underline">Reportar Bug</a>
   </div>
 </nav>
 

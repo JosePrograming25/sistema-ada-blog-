@@ -11,6 +11,7 @@ const sortedPosts = (allPosts as any[]).sort((a, b) =>
 );
 
 const filterType = Astro.url.searchParams.get("tipo") ?? "todos";
+const base = import.meta.env.BASE_URL;
 
 const filtered = filterType === "todos"
   ? sortedPosts

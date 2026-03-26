@@ -12,9 +12,9 @@ const base = import.meta.env.BASE_URL;
       </span>
     </div>
     <div class="flex items-center gap-4 text-xs text-muted-foreground">
-      <a href="/" class="hover:text-amber-400 transition-colors no-underline">Inicio</a>
-      <a href="/actualizaciones" class="hover:text-amber-400 transition-colors no-underline">Actualizaciones</a>
-      <a href="/reportar-bug" class="hover:text-amber-400 transition-colors no-underline">Reportar Bug</a>
+      <a href={base} class="hover:text-amber-400 transition-colors no-underline">Inicio</a>
+      <a href={`${base}actualizaciones`} class="hover:text-amber-400 transition-colors no-underline">Actualizaciones</a>
+      <a href={`${base}reportar-bug`} class="hover:text-amber-400 transition-colors no-underline">Reportar Bug</a>
     </div>
   </div>
 </footer>

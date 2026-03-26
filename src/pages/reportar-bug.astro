@@ -1,12 +1,13 @@
 ---
 import Layout from "../layouts/Layout.astro";
+const base = import.meta.env.BASE_URL;
 ---
 
 <Layout title="Reportar Bug">
   <div class="max-w-2xl mx-auto px-4 sm:px-6 py-12">
 
     <div class="mb-8">
-      <a href="/" class="text-xs text-muted-foreground hover:text-amber-400 transition-colors no-underline">← Inicio</a>
+      <a href={base} class="text-xs text-muted-foreground hover:text-amber-400 transition-colors no-underline">← Inicio</a>
       <h1 class="text-3xl font-extrabold text-white mt-4 mb-1">Reportar un bug</h1>
       <p class="text-slate-400 text-sm">
         Tu reporte llega directamente al equipo de desarrollo. No necesitas cuenta ni registro.

@@ -11,6 +11,7 @@ const sortedPosts = (allPosts as any[]).sort((a, b) =>
 );
 
 const recentPosts = sortedPosts.slice(0, 6);
+const base = import.meta.env.BASE_URL;
 
 const patchCount  = sortedPosts.filter(p => p.frontmatter.type === "parche").length;
 const mejoraCount = sortedPosts.filter(p => p.frontmatter.type === "mejora").length;
@@ -38,10 +39,10 @@ const latestVersion = sortedPosts[0]?.frontmatter.version ?? "—";
       </p>
 
       <div class="flex flex-wrap justify-center gap-3">
-        <a href="/actualizaciones" class="px-6 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-900 font-semibold text-sm transition-colors">
+        <a href={`${base}actualizaciones`} class="px-6 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-900 font-semibold text-sm transition-colors">
           Ver actualizaciones
         </a>
-        <a href="/reportar-bug" class="px-6 py-2.5 rounded-lg border border-border hover:border-amber-500/50 text-slate-300 hover:text-amber-400 font-medium text-sm transition-colors">
+        <a href={`${base}reportar-bug`} class="px-6 py-2.5 rounded-lg border border-border hover:border-amber-500/50 text-slate-300 hover:text-amber-400 font-medium text-sm transition-colors">
           Reportar un bug
         </a>
       </div>
@@ -107,7 +108,7 @@ const latestVersion = sortedPosts[0]?.frontmatter.version ?? "—";
     <section class="space-y-6">
       <div class="flex items-center justify-between">
         <h2 class="text-xl font-bold text-white">Últimas actualizaciones</h2>
-        <a href="/actualizaciones" class="text-sm text-amber-400 hover:text-amber-300 transition-colors">
+        <a href={`${base}actualizaciones`} class="text-sm text-amber-400 hover:text-amber-300 transition-colors">
           Ver todas &rarr;
         </a>
       </div>
@@ -142,7 +143,7 @@ const latestVersion = sortedPosts[0]?.frontmatter.version ?? "—";
         Cuéntanos qué pasó. Tu reporte llega directamente al equipo y nos ayuda a mejorar el sistema.
       </p>
       <a
-        href="/reportar-bug"
+        href={`${base}reportar-bug`}
         class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-300 font-medium text-sm transition-colors"
       >
         Reportar bug &rarr;
