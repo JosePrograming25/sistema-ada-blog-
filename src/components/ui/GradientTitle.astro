@@ -1,0 +1,28 @@
+---
+interface Props {
+    emoji?: string;
+    class?: string;
+}
+
+const { emoji, class: className = "text-4xl md:text-6xl" } = Astro.props;
+---
+
+<h1
+    class:list={[
+        "font-extrabold tracking-tight text-slate-900 dark:text-white",
+        className,
+    ]}
+>
+    <span
+        class="bg-clip-text text-transparent bg-linear-to-r from-blue-600 to-purple-600 dark:from-blue-400 dark:to-purple-400"
+    >
+        <slot />
+    </span>
+    {
+        emoji && (
+            <span class="ml-2 inline-block filter-none text-initial">
+                {emoji}
+            </span>
+        )
+    }
+</h1>

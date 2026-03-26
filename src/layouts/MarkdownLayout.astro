@@ -1,0 +1,143 @@
+---
+import TableOfContents from "../components/TableOfContents.astro";
+import Layout from "./Layout.astro";
+import ImageZoom from "../components/ImageZoom.astro";
+
+const { frontmatter, headings } = Astro.props;
+
+const typeLower = (frontmatter.type ?? "mejora").toLowerCase();
+const typeMeta: Record<string, { label: string; cls: string; dot: string }> = {
+  parche:  { label: "Parche",  cls: "badge-parche",  dot: "bg-red-400"   },
+  mejora:  { label: "Mejora",  cls: "badge-mejora",  dot: "bg-amber-400" },
+  mayor:   { label: "Mayor",   cls: "badge-mayor",   dot: "bg-blue-400"  },
+};
+const meta = typeMeta[typeLower] ?? typeMeta["mejora"];
+
+const formattedDate = frontmatter.date
+  ? new Date(frontmatter.date).toLocaleDateString("es-ES", {
+      year: "numeric", month: "long", day: "numeric",
+    })
+  : null;
+---
+
+<Layout title={frontmatter.title}>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-10 flex gap-12">
+    <!-- TOC sidebar -->
+    <aside class="hidden lg:block w-64 shrink-0 order-first sticky top-24 self-start max-h-[calc(100vh-6rem)] overflow-y-auto">
+      {headings && headings.length > 0 && (
+        <TableOfContents headings={headings} title={frontmatter.title} />
+      )}
+    </aside>
+
+    <!-- Main content -->
+    <article class="flex-1 min-w-0 max-w-3xl" data-pagefind-body>
+      <!-- Back -->
+      <a href="/actualizaciones" class="inline-flex items-center gap-1.5 text-xs text-muted-foreground hover:text-amber-400 transition-colors mb-8 no-underline">
+        ← Volver a actualizaciones
+      </a>
+
+      <!-- Header -->
+      <header class="mb-10">
+        <div class="flex flex-wrap items-center gap-3 mb-4">
+          <span class={`inline-flex items-center px-3 py-1 rounded-full text-xs font-bold uppercase tracking-wider ${meta.cls}`}>
+            <span class={`w-1.5 h-1.5 rounded-full ${meta.dot} mr-1.5`}></span>
+            {meta.label}
+          </span>
+          {frontmatter.version && (
+            <span class="text-xs font-mono text-amber-400/80 bg-amber-500/10 border border-amber-500/20 px-2.5 py-1 rounded">
+              {frontmatter.version}
+            </span>
+          )}
+          {formattedDate && (
+            <time class="text-xs text-muted-foreground">{formattedDate}</time>
+          )}
+        </div>
+
+        <h1 class="text-3xl md:text-4xl font-extrabold tracking-tight text-white mb-3 leading-tight">
+          {frontmatter.title}
+        </h1>
+
+        {frontmatter.description && (
+          <p class="text-base text-slate-400">{frontmatter.description}</p>
+        )}
+
+        {frontmatter.tags && frontmatter.tags.length > 0 && (
+          <div class="flex flex-wrap gap-1.5 mt-4">
+            {frontmatter.tags.map((tag: string) => (
+              <span class="text-[11px] bg-slate-700/50 text-slate-400 px-2 py-0.5 rounded border border-slate-600/50">
+                #{tag}
+              </span>
+            ))}
+          </div>
+        )}
+      </header>
+
+      <!-- Markdown content -->
+      <div
+        class="prose prose-invert prose-slate max-w-none
+        prose-headings:font-bold prose-headings:tracking-tight prose-headings:text-white
+        prose-h2:text-2xl prose-h2:border-b prose-h2:border-border prose-h2:pb-2
+        prose-h3:text-lg prose-h3:text-slate-200
+        prose-a:text-amber-400 prose-a:no-underline hover:prose-a:underline
+        prose-strong:text-white
+        prose-code:text-amber-300 prose-code:bg-slate-800/80 prose-code:px-1.5 prose-code:py-0.5 prose-code:rounded prose-code:before:content-none prose-code:after:content-none prose-code:text-[0.85em]
+        prose-pre:bg-slate-800 prose-pre:border prose-pre:border-slate-700
+        prose-blockquote:border-amber-500/50 prose-blockquote:bg-amber-500/5 prose-blockquote:text-slate-300
+        prose-img:rounded-xl prose-img:shadow-lg prose-img:border prose-img:border-border
+        [&_pre_code]:bg-transparent [&_pre_code]:text-inherit [&_pre_code]:p-0"
+      >
+        <slot />
+      </div>
+
+      <!-- Footer nav -->
+      <div class="mt-12 pt-6 border-t border-border">
+        <a href="/actualizaciones" class="inline-flex items-center gap-2 text-sm text-amber-400 hover:text-amber-300 transition-colors no-underline">
+          ← Ver todas las actualizaciones
+        </a>
+      </div>
+    </article>
+  </div>
+
+  <ImageZoom />
+</Layout>
+
+<style is:global>
+  .prose h2, .prose h3, .prose h4 {
+    scroll-margin-top: 6rem;
+  }
+</style>
+
+<script>
+  // Copy code button
+  document.querySelectorAll("pre").forEach((pre) => {
+    const wrapper = document.createElement("div");
+    wrapper.className = "relative group";
+    pre.parentNode?.insertBefore(wrapper, pre);
+    wrapper.appendChild(pre);
+    const btn = document.createElement("button");
+    btn.className = "absolute top-3 right-3 p-1.5 rounded bg-white/10 hover:bg-white/20 text-white/60 hover:text-white transition-all opacity-0 group-hover:opacity-100 text-xs";
+    btn.textContent = "Copiar";
+    btn.addEventListener("click", async () => {
+      const code = pre.querySelector("code")?.innerText ?? "";
+      await navigator.clipboard.writeText(code).catch(() => {});
+      btn.textContent = "Copiado!";
+      setTimeout(() => { btn.textContent = "Copiar"; }, 2000);
+    });
+    wrapper.appendChild(btn);
+  });
+
+  // Scroll spy for TOC
+  const observer = new IntersectionObserver((entries) => {
+    entries.forEach((entry) => {
+      if (entry.isIntersecting) {
+        const id = entry.target.getAttribute("id");
+        document.querySelectorAll(".toc-item a").forEach(link => {
+          link.classList.toggle("text-amber-400", link.getAttribute("href") === `#${id}`);
+          link.classList.toggle("text-muted-foreground", link.getAttribute("href") !== `#${id}`);
+        });
+      }
+    });
+  }, { rootMargin: "0px 0px -70% 0px" });
+
+  document.querySelectorAll("article h2, article h3").forEach(h => observer.observe(h));
+</script>

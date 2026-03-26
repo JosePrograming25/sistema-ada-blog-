@@ -1,0 +1,44 @@
+---
+const { headings, title } = Astro.props;
+---
+
+<nav class="toc-container p-4 bg-secondary/50 border border-border rounded-xl">
+  <p class="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-3">En esta página</p>
+  <ul class="flex flex-col gap-1 text-sm">
+    {
+      headings.map((heading) => (
+        <li
+          class={`toc-item depth-${heading.depth}`}
+          data-slug={heading.slug}
+        >
+          <a
+            href={`#${heading.slug}`}
+            class="text-muted-foreground hover:text-amber-400 block py-1 transition-colors no-underline leading-snug"
+          >
+            {heading.text}
+          </a>
+        </li>
+      ))
+    }
+  </ul>
+</nav>
+
+<style>
+  /* Indentación basada en profundidad */
+  .depth-1 {
+    margin-left: 0;
+  }
+  .depth-2 {
+    margin-left: 0;
+  }
+  .depth-3 {
+    margin-left: 1rem;
+  }
+  .depth-4 {
+    margin-left: 2rem;
+  }
+
+  .toc-item.active {
+    border-color: hsl(var(--primary));
+  }
+</style>

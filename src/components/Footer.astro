@@ -1,0 +1,19 @@
+---
+const year = new Date().getFullYear();
+---
+
+<footer class="border-t border-border bg-secondary/30 py-8 mt-16">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 flex flex-col sm:flex-row items-center justify-between gap-4">
+    <div class="flex items-center gap-2">
+      <img src="/logo.svg" alt="Sistema Ada" class="w-6 h-6 opacity-60" />
+      <span class="text-sm text-muted-foreground">
+        Sistema Ada &copy; {year}
+      </span>
+    </div>
+    <div class="flex items-center gap-4 text-xs text-muted-foreground">
+      <a href="/" class="hover:text-amber-400 transition-colors no-underline">Inicio</a>
+      <a href="/actualizaciones" class="hover:text-amber-400 transition-colors no-underline">Actualizaciones</a>
+      <a href="/reportar-bug" class="hover:text-amber-400 transition-colors no-underline">Reportar Bug</a>
+    </div>
+  </div>
+</footer>

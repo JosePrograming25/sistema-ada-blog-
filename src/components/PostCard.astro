@@ -1,0 +1,75 @@
+---
+interface Props {
+  title: string;
+  description: string;
+  url: string;
+  date: string;
+  version?: string;
+  type?: string;
+  tags?: string[];
+}
+
+const { title, description, url, date, version, type = "mejora", tags = [] } = Astro.props;
+
+const typeLower = type.toLowerCase();
+
+const typeMeta: Record<string, { label: string; cls: string; dot: string }> = {
+  parche:  { label: "Parche",  cls: "badge-parche",  dot: "bg-red-400"   },
+  mejora:  { label: "Mejora",  cls: "badge-mejora",  dot: "bg-amber-400" },
+  mayor:   { label: "Mayor",   cls: "badge-mayor",   dot: "bg-blue-400"  },
+};
+
+const meta = typeMeta[typeLower] ?? typeMeta["mejora"];
+
+const formattedDate = new Date(date).toLocaleDateString("es-ES", {
+  year: "numeric",
+  month: "short",
+  day: "numeric",
+});
+---
+
+<article class="group bg-card border border-border rounded-xl overflow-hidden transition-all duration-200 hover:border-amber-500/40 hover:-translate-y-0.5 hover:shadow-lg hover:shadow-amber-500/5 flex flex-col">
+  <a href={url} class="flex flex-col h-full no-underline p-5">
+    <!-- Header row -->
+    <div class="flex items-start justify-between gap-3 mb-3">
+      <div class="flex items-center gap-2 flex-wrap">
+        <span class={`inline-flex items-center px-2.5 py-0.5 rounded-full text-[11px] font-bold uppercase tracking-wider ${meta.cls}`}>
+          <span class={`w-1.5 h-1.5 rounded-full ${meta.dot} mr-1.5`}></span>
+          {meta.label}
+        </span>
+        {version && (
+          <span class="text-xs font-mono text-amber-400/80 bg-amber-500/10 border border-amber-500/20 px-2 py-0.5 rounded">
+            {version}
+          </span>
+        )}
+      </div>
+      <time class="text-xs text-muted-foreground shrink-0">{formattedDate}</time>
+    </div>
+
+    <!-- Title -->
+    <h3 class="text-base font-bold text-card-foreground mb-2 leading-snug group-hover:text-amber-400 transition-colors">
+      {title}
+    </h3>
+
+    <!-- Description -->
+    <p class="text-sm text-muted-foreground line-clamp-2 mb-4 flex-1">
+      {description}
+    </p>
+
+    <!-- Tags -->
+    {tags.length > 0 && (
+      <div class="flex flex-wrap gap-1 mb-3">
+        {tags.slice(0, 4).map((tag) => (
+          <span class="text-[10px] bg-slate-700/50 text-slate-400 px-2 py-0.5 rounded border border-slate-600/50">
+            #{tag}
+          </span>
+        ))}
+      </div>
+    )}
+
+    <!-- Footer -->
+    <div class="mt-auto pt-3 border-t border-border flex items-center text-amber-400/70 text-xs font-medium group-hover:text-amber-400 transition-colors group-hover:translate-x-0.5 duration-200">
+      Ver actualizacion &rarr;
+    </div>
+  </a>
+</article>

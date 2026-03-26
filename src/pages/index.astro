@@ -1,0 +1,153 @@
+---
+import Layout from "../layouts/Layout.astro";
+import PostCard from "../components/PostCard.astro";
+
+const allPosts = Object.values(
+  import.meta.glob("./actualizaciones/*.md", { eager: true }),
+);
+
+const sortedPosts = (allPosts as any[]).sort((a, b) =>
+  new Date(b.frontmatter.date).valueOf() - new Date(a.frontmatter.date).valueOf()
+);
+
+const recentPosts = sortedPosts.slice(0, 6);
+
+const patchCount  = sortedPosts.filter(p => p.frontmatter.type === "parche").length;
+const mejoraCount = sortedPosts.filter(p => p.frontmatter.type === "mejora").length;
+const mayorCount  = sortedPosts.filter(p => p.frontmatter.type === "mayor").length;
+const latestVersion = sortedPosts[0]?.frontmatter.version ?? "—";
+---
+
+<Layout>
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12 space-y-20">
+
+    <!-- Hero -->
+    <section class="text-center space-y-6 py-10">
+      <div class="inline-flex items-center gap-2 px-4 py-1.5 rounded-full border border-amber-500/30 bg-amber-500/10 text-amber-400 text-xs font-semibold uppercase tracking-widest mb-2">
+        <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-pulse"></span>
+        Blog de actualizaciones
+      </div>
+
+      <h1 class="text-4xl sm:text-5xl md:text-6xl font-extrabold tracking-tight text-white">
+        Sistema <span class="text-amber-400">Ada</span>
+      </h1>
+
+      <p class="text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed">
+        Aquí publicamos todo lo que mejoramos, corregimos y añadimos al sistema.
+        Sigue las actualizaciones y reporta cualquier problema que encuentres.
+      </p>
+
+      <div class="flex flex-wrap justify-center gap-3">
+        <a href="/actualizaciones" class="px-6 py-2.5 rounded-lg bg-amber-500 hover:bg-amber-400 text-slate-900 font-semibold text-sm transition-colors">
+          Ver actualizaciones
+        </a>
+        <a href="/reportar-bug" class="px-6 py-2.5 rounded-lg border border-border hover:border-amber-500/50 text-slate-300 hover:text-amber-400 font-medium text-sm transition-colors">
+          Reportar un bug
+        </a>
+      </div>
+
+      <!-- Stats -->
+      <div class="flex flex-wrap justify-center gap-6 pt-6">
+        <div class="text-center">
+          <p class="text-2xl font-bold text-white">{sortedPosts.length}</p>
+          <p class="text-xs text-slate-500 uppercase tracking-wider">Publicaciones</p>
+        </div>
+        <div class="w-px bg-border hidden sm:block"></div>
+        <div class="text-center">
+          <p class="text-2xl font-bold text-white">{latestVersion}</p>
+          <p class="text-xs text-slate-500 uppercase tracking-wider">Versión actual</p>
+        </div>
+        <div class="w-px bg-border hidden sm:block"></div>
+        <div class="flex gap-4">
+          <div class="text-center">
+            <p class="text-2xl font-bold text-red-400">{patchCount}</p>
+            <p class="text-xs text-slate-500 uppercase tracking-wider">Parches</p>
+          </div>
+          <div class="text-center">
+            <p class="text-2xl font-bold text-amber-400">{mejoraCount}</p>
+            <p class="text-xs text-slate-500 uppercase tracking-wider">Mejoras</p>
+          </div>
+          <div class="text-center">
+            <p class="text-2xl font-bold text-blue-400">{mayorCount}</p>
+            <p class="text-xs text-slate-500 uppercase tracking-wider">Mayores</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Leyenda tipos -->
+    <section class="bg-card border border-border rounded-xl p-6">
+      <h2 class="text-xs font-bold text-muted-foreground uppercase tracking-widest mb-4">Tipos de actualización</h2>
+      <div class="grid grid-cols-1 sm:grid-cols-3 gap-4">
+        <div class="flex items-start gap-3">
+          <span class="w-2 h-2 rounded-full bg-red-400 mt-1 shrink-0"></span>
+          <div>
+            <p class="text-sm font-semibold text-red-300">Parche</p>
+            <p class="text-xs text-muted-foreground">Corrección de errores. Versión v1.0.<strong>X</strong></p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="w-2 h-2 rounded-full bg-amber-400 mt-1 shrink-0"></span>
+          <div>
+            <p class="text-sm font-semibold text-amber-300">Mejora</p>
+            <p class="text-xs text-muted-foreground">Nueva función pequeña. Versión v1.<strong>X</strong>.0</p>
+          </div>
+        </div>
+        <div class="flex items-start gap-3">
+          <span class="w-2 h-2 rounded-full bg-blue-400 mt-1 shrink-0"></span>
+          <div>
+            <p class="text-sm font-semibold text-blue-300">Mayor</p>
+            <p class="text-xs text-muted-foreground">Cambio grande. Versión <strong>vX</strong>.0.0</p>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- Últimas actualizaciones -->
+    <section class="space-y-6">
+      <div class="flex items-center justify-between">
+        <h2 class="text-xl font-bold text-white">Últimas actualizaciones</h2>
+        <a href="/actualizaciones" class="text-sm text-amber-400 hover:text-amber-300 transition-colors">
+          Ver todas &rarr;
+        </a>
+      </div>
+
+      {recentPosts.length > 0 ? (
+        <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+          {recentPosts.map((post: any) => (
+            <PostCard
+              title={post.frontmatter.title ?? "Sin título"}
+              description={post.frontmatter.description ?? ""}
+              url={post.url}
+              date={post.frontmatter.date ?? new Date().toISOString()}
+              version={post.frontmatter.version}
+              type={post.frontmatter.type ?? "mejora"}
+              tags={post.frontmatter.tags}
+            />
+          ))}
+        </div>
+      ) : (
+        <div class="text-center py-16 bg-card border border-border rounded-xl">
+          <p class="text-4xl mb-3">📝</p>
+          <p class="text-muted-foreground">Aún no hay actualizaciones publicadas.</p>
+        </div>
+      )}
+    </section>
+
+    <!-- CTA Reportar Bug -->
+    <section class="bg-red-500/5 border border-red-500/20 rounded-xl p-8 text-center">
+      <div class="text-3xl mb-3">🐛</div>
+      <h2 class="text-xl font-bold text-white mb-2">¿Encontraste un error?</h2>
+      <p class="text-slate-400 mb-5 max-w-md mx-auto text-sm">
+        Cuéntanos qué pasó. Tu reporte llega directamente al equipo y nos ayuda a mejorar el sistema.
+      </p>
+      <a
+        href="/reportar-bug"
+        class="inline-flex items-center gap-2 px-6 py-2.5 rounded-lg bg-red-500/20 hover:bg-red-500/30 border border-red-500/30 text-red-300 font-medium text-sm transition-colors"
+      >
+        Reportar bug &rarr;
+      </a>
+    </section>
+
+  </div>
+</Layout>

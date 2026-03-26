@@ -1,0 +1,87 @@
+---
+import Search from "./Search.astro";
+---
+
+<nav class="sticky top-0 z-50 border-b border-border bg-[#0f172a]/95 backdrop-blur-md">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-3 flex items-center justify-between">
+    <!-- Logo -->
+    <a href="/" class="flex items-center gap-2.5 no-underline group shrink-0">
+      <img
+        src="/logo.svg"
+        alt="Sistema Ada"
+        class="w-8 h-8 object-contain group-hover:scale-110 transition-transform duration-200"
+      />
+      <div class="flex flex-col leading-none">
+        <span class="text-base font-extrabold text-amber-400 tracking-tight">Sistema Ada</span>
+        <span class="text-[10px] text-slate-400 font-medium uppercase tracking-widest">Updates</span>
+      </div>
+    </a>
+
+    <!-- Nav links (desktop) -->
+    <ul class="hidden md:flex items-center gap-6 list-none">
+      <li>
+        <a href="/" class="text-slate-300 hover:text-amber-400 transition-colors text-sm font-medium no-underline">
+          Inicio
+        </a>
+      </li>
+      <li>
+        <a href="/actualizaciones" class="text-slate-300 hover:text-amber-400 transition-colors text-sm font-medium no-underline">
+          Actualizaciones
+        </a>
+      </li>
+      <li>
+        <a href="/reportar-bug" class="text-slate-300 hover:text-amber-400 transition-colors text-sm font-medium no-underline">
+          Reportar Bug
+        </a>
+      </li>
+    </ul>
+
+    <!-- Right actions -->
+    <div class="flex items-center gap-2">
+      <button
+        id="search-btn"
+        class="p-2 rounded-lg hover:bg-slate-800 transition-colors text-slate-400 hover:text-amber-400"
+        aria-label="Buscar"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none"
+          stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+          <circle cx="11" cy="11" r="8"></circle><path d="m21 21-4.3-4.3"></path>
+        </svg>
+      </button>
+
+      <!-- Mobile menu button -->
+      <button
+        id="menu-toggle"
+        class="md:hidden p-2 rounded-lg hover:bg-slate-800 transition-colors text-slate-400"
+        aria-label="Menú"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+        </svg>
+      </button>
+    </div>
+  </div>
+
+  <!-- Mobile menu -->
+  <div id="mobile-menu" class="hidden md:hidden border-t border-border bg-[#0f172a] px-4 py-3 space-y-2">
+    <a href="/" class="block py-2 text-slate-300 hover:text-amber-400 text-sm font-medium no-underline">Inicio</a>
+    <a href="/actualizaciones" class="block py-2 text-slate-300 hover:text-amber-400 text-sm font-medium no-underline">Actualizaciones</a>
+    <a href="/reportar-bug" class="block py-2 text-slate-300 hover:text-amber-400 text-sm font-medium no-underline">Reportar Bug</a>
+  </div>
+</nav>
+
+<Search />
+
+<script>
+  const menuToggle = document.getElementById("menu-toggle");
+  const mobileMenu = document.getElementById("mobile-menu");
+  const searchBtn = document.getElementById("search-btn");
+
+  menuToggle?.addEventListener("click", () => {
+    mobileMenu?.classList.toggle("hidden");
+  });
+
+  searchBtn?.addEventListener("click", () => {
+    window.dispatchEvent(new CustomEvent("open-search"));
+  });
+</script>

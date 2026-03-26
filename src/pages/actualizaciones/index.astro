@@ -1,0 +1,65 @@
+---
+import Layout from "../../layouts/Layout.astro";
+import PostCard from "../../components/PostCard.astro";
+
+const allPosts = Object.values(
+  import.meta.glob("./*.md", { eager: true }),
+);
+
+const sortedPosts = (allPosts as any[]).sort((a, b) =>
+  new Date(b.frontmatter.date).valueOf() - new Date(a.frontmatter.date).valueOf()
+);
+
+const filterType = Astro.url.searchParams.get("tipo") ?? "todos";
+
+const filtered = filterType === "todos"
+  ? sortedPosts
+  : sortedPosts.filter(p => p.frontmatter.type?.toLowerCase() === filterType);
+---
+
+<Layout title="Actualizaciones">
+  <div class="max-w-6xl mx-auto px-4 sm:px-6 py-12">
+
+    <div class="mb-8">
+      <h1 class="text-3xl font-extrabold text-white mb-1">Actualizaciones</h1>
+      <p class="text-muted-foreground text-sm">Historial completo de versiones del sistema.</p>
+    </div>
+
+    <!-- Filtros -->
+    <div class="flex flex-wrap gap-2 mb-8">
+      {[
+        { key: "todos",  label: "Todos",  cls: "border-border hover:border-amber-500/50 text-slate-300 hover:text-amber-400" },
+        { key: "parche", label: "Parches",  cls: "border-red-500/30 text-red-300 hover:bg-red-500/10" },
+        { key: "mejora", label: "Mejoras", cls: "border-amber-500/30 text-amber-300 hover:bg-amber-500/10" },
+        { key: "mayor",  label: "Mayores",  cls: "border-blue-500/30 text-blue-300 hover:bg-blue-500/10" },
+      ].map(({ key, label, cls }) => (
+        <a
+          href={key === "todos" ? "/actualizaciones" : `/actualizaciones?tipo=${key}`}
+          class={`px-4 py-1.5 rounded-lg border text-sm font-medium transition-colors no-underline ${cls} ${filterType === key ? "ring-1 ring-amber-400/50 bg-amber-500/10" : ""}`}
+        >
+          {label}
+        </a>
+      ))}
+    </div>
+
+    {filtered.length > 0 ? (
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+        {filtered.map((post: any) => (
+          <PostCard
+            title={post.frontmatter.title ?? "Sin título"}
+            description={post.frontmatter.description ?? ""}
+            url={post.url}
+            date={post.frontmatter.date ?? new Date().toISOString()}
+            version={post.frontmatter.version}
+            type={post.frontmatter.type ?? "mejora"}
+            tags={post.frontmatter.tags}
+          />
+        ))}
+      </div>
+    ) : (
+      <div class="text-center py-16 bg-card border border-border rounded-xl">
+        <p class="text-muted-foreground">No hay actualizaciones de este tipo aún.</p>
+      </div>
+    )}
+  </div>
+</Layout>
