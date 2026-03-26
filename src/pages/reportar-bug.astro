@@ -140,6 +140,7 @@ const base = import.meta.env.BASE_URL;
 <script>
   const CLOUDINARY_CLOUD = "de2trmels";
   const CLOUDINARY_PRESET = "sys2b8";
+  const DISCORD_WEBHOOK = "https://discordapp.com/api/webhooks/1486536160858607626/9d7JbdFxsgVhcUwmUMI9j96fc-kEDGk4PiqAJ1lrgj_wfZ-VhOpDb4UA7ovAQciH-vNs";
 
   const form = document.getElementById("bug-form") as HTMLFormElement;
   const submitBtn = document.getElementById("submit-btn") as HTMLButtonElement;
@@ -222,10 +223,39 @@ const base = import.meta.env.BASE_URL;
       }
 
       submitBtn.textContent = "Enviando reporte...";
-      const res = await fetch("https://api.web3forms.com/submit", { method: "POST", body: data });
-      const json = await res.json();
 
-      if (json.success) {
+      const nombre    = (data.get("nombre") as string)     || "Anónimo";
+      const version   = (data.get("version") as string)    || "—";
+      const pantalla  = (data.get("pantalla") as string)   || "—";
+      const descripcion = (data.get("descripcion") as string) || "—";
+      const imgUrl    = capturaUrl.value;
+
+      // Enviar a Web3Forms (email) y Discord en paralelo
+      const [web3res] = await Promise.all([
+        fetch("https://api.web3forms.com/submit", { method: "POST", body: data }),
+        fetch(DISCORD_WEBHOOK, {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            embeds: [{
+              title: "🐛 Bug Report — Sistema Ada",
+              color: 0xf59e0b,
+              fields: [
+                { name: "👤 Usuario",   value: nombre,     inline: true },
+                { name: "🔖 Versión",   value: version,    inline: true },
+                { name: "📋 Pantalla",  value: pantalla,   inline: true },
+                { name: "📝 Descripción", value: descripcion },
+                ...(imgUrl ? [{ name: "📸 Captura", value: imgUrl }] : []),
+              ],
+              timestamp: new Date().toISOString(),
+              footer: { text: "Sistema Ada Blog" },
+            }],
+          }),
+        }),
+      ]);
+
+      const web3json = await web3res.json();
+      if (web3json.success) {
         form.reset();
         clearFile();
         successMsg?.classList.remove("hidden");
